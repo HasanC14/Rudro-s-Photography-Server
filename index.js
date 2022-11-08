@@ -68,19 +68,24 @@ async function run() {
       const result = await ServiceCollection.insertOne(service);
       res.send(result);
     });
+    //Add Review
+    app.post("/AddReview", async (req, res) => {
+      const Review = req.body;
+      const result = await ReviewCollection.insertOne(Review);
+      res.send(result);
+    });
     //Service ID dia filtered Review
-    // app.get("/orders", verifyJWT, async (req, res) => {
-    //   if (req.decoded.email !== req.query.email) {
-    //     return res.status(401).send({ Message: "Unauthorized Access" });
-    //   }
-    //   let query = {};
-    //   if (req.query.email) {
-    //     query = { email: req.query.email };
-    //   }
-    //   const cursor = OrderCollection.find(query);
-    //   const orders = await cursor.toArray();
-    //   res.send(orders);
-    // });
+    app.get("/reviews", async (req, res) => {
+      let query = {};
+      if (req.query.id) {
+        query = { ServiceID: req.query.id };
+      }
+      const cursor = ReviewCollection.find(query).sort({
+        Time: -1,
+      });
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
 
     //All Reviews
     // app.get("/reviews", async (req, res) => {
