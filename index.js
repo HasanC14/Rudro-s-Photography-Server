@@ -42,6 +42,19 @@ async function run() {
       const services = await cursor.toArray();
       res.send(services);
     });
+    //Getting a Single Service by ID
+    app.get("/Services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await ServiceCollection.findOne(query);
+      res.send(result);
+    });
+    //Add Service
+    app.post("/AddService", async (req, res) => {
+      const service = req.body;
+      const result = await ServiceCollection.insertOne(service);
+      res.send(result);
+    });
     //All Reviews
     app.get("/reviews", async (req, res) => {
       const query = {};
@@ -58,13 +71,6 @@ async function run() {
     //   });
     //   res.send({ token });
     //   //send must json e hote hobe tai second bracket die dilam
-    // });
-
-    //Insert Order
-    // app.post("/orders", async (req, res) => {
-    //   const order = req.body;
-    //   const result = await OrderCollection.insertOne(order);
-    //   res.send(result);
     // });
 
     //All service with limit
@@ -97,14 +103,6 @@ async function run() {
     //   const cursor = OrderCollection.find(query);
     //   const orders = await cursor.toArray();
     //   res.send(orders);
-    // });
-
-    //Get a Single Service by ID
-    // app.get("/services/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const result = await ServiceCollection.findOne(query);
-    //   res.send(result);
     // });
 
     //Update Status
