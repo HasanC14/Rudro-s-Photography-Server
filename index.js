@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
-var jwt = require("jsonwebtoken");
+//var jwt = require("jsonwebtoken");
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
@@ -33,10 +33,22 @@ const client = new MongoClient(uri, {
 // };
 async function run() {
   try {
-    const ServiceCollection = client
-      .db("ServiceDatabase")
-      .collection("Services");
-    //const OrderCollection = client.db("ServiceDatabase").collection("Orders");
+    const ServiceCollection = client.db("RP_Database").collection("Services");
+    const ReviewCollection = client.db("RP_Database").collection("Reviews");
+    //All Services
+    app.get("/services", async (req, res) => {
+      const query = {};
+      const cursor = ServiceCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+    //All Reviews
+    app.get("/reviews", async (req, res) => {
+      const query = {};
+      const cursor = ReviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
 
     //JWT
     // app.post("/jwt", (req, res) => {
@@ -55,22 +67,22 @@ async function run() {
     //   res.send(result);
     // });
 
-    //All Services
-    app.get("/services", async (req, res) => {
-      const CurrentPage = parseInt(req.query.CurrentPage);
-      const PerPageData = parseInt(req.query.PerPageData);
+    //All service with limit
+    // app.get("/services", async (req, res) => {
+    //     const CurrentPage = parseInt(req.query.CurrentPage);
+    //     const PerPageData = parseInt(req.query.PerPageData);
 
-      const query = {};
-      const cursor = ServiceCollection.find(query);
-      const services = await cursor
-        .skip(CurrentPage * PerPageData)
-        .limit(PerPageData)
-        .toArray();
+    //     const query = {};
+    //     const cursor = ServiceCollection.find(query);
+    //     const services = await cursor
+    //       .skip(CurrentPage * PerPageData)
+    //       .limit(PerPageData)
+    //       .toArray();
 
-      const count = await ServiceCollection.estimatedDocumentCount();
+    //     const count = await ServiceCollection.estimatedDocumentCount();
 
-      res.send({ count, services });
-    });
+    //     res.send({ count, services });
+    //   });
     //All orders & Email dia filtered result
     // app.get("/orders", verifyJWT, async (req, res) => {
     //   if (req.decoded.email !== req.query.email) {
