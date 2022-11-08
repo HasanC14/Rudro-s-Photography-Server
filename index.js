@@ -38,7 +38,20 @@ async function run() {
     //All Services
     app.get("/services", async (req, res) => {
       const query = {};
-      const cursor = ServiceCollection.find(query);
+      const cursor = ServiceCollection.find(query).sort({
+        _id: -1,
+      });
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+    //Limit Service
+    app.get("/LimitServices", async (req, res) => {
+      const query = {};
+      const cursor = ServiceCollection.find(query)
+        .sort({
+          _id: -1,
+        })
+        .limit(3);
       const services = await cursor.toArray();
       res.send(services);
     });
@@ -55,14 +68,27 @@ async function run() {
       const result = await ServiceCollection.insertOne(service);
       res.send(result);
     });
-    //All Reviews
-    app.get("/reviews", async (req, res) => {
-      const query = {};
-      const cursor = ReviewCollection.find(query);
-      const reviews = await cursor.toArray();
-      res.send(reviews);
-    });
+    //Service ID dia filtered Review
+    // app.get("/orders", verifyJWT, async (req, res) => {
+    //   if (req.decoded.email !== req.query.email) {
+    //     return res.status(401).send({ Message: "Unauthorized Access" });
+    //   }
+    //   let query = {};
+    //   if (req.query.email) {
+    //     query = { email: req.query.email };
+    //   }
+    //   const cursor = OrderCollection.find(query);
+    //   const orders = await cursor.toArray();
+    //   res.send(orders);
+    // });
 
+    //All Reviews
+    // app.get("/reviews", async (req, res) => {
+    //   const query = {};
+    //   const cursor = ReviewCollection.find(query);
+    //   const reviews = await cursor.toArray();
+    //   res.send(reviews);
+    // });
     //JWT
     // app.post("/jwt", (req, res) => {
     //   const user = req.body;
@@ -89,21 +115,6 @@ async function run() {
 
     //     res.send({ count, services });
     //   });
-    //All orders & Email dia filtered result
-    // app.get("/orders", verifyJWT, async (req, res) => {
-    //   if (req.decoded.email !== req.query.email) {
-    //     return res.status(401).send({ Message: "Unauthorized Access" });
-    //   }
-    //   let query = {};
-    //   if (req.query.email) {
-    //     query = { email: req.query.email };
-    //   }
-    //   //http://localhost:5000/orders/?email=mdjobaer00304@gmail.com
-    //   //Question er porer tuk query
-    //   const cursor = OrderCollection.find(query);
-    //   const orders = await cursor.toArray();
-    //   res.send(orders);
-    // });
 
     //Update Status
     // app.patch("/orders/:id", async (req, res) => {
