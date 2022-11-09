@@ -86,7 +86,25 @@ async function run() {
       const reviews = await cursor.toArray();
       res.send(reviews);
     });
-
+    //User Specific Review
+    app.get("/MyReviews", async (req, res) => {
+      let query = {};
+      if (req.query.Username) {
+        query = { Username: req.query.Username };
+      }
+      const cursor = ReviewCollection.find(query).sort({
+        Time: -1,
+      });
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+    //Delete Review
+    app.delete("/review/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await ReviewCollection.deleteOne(query);
+      res.send(result);
+    });
     //All Reviews
     // app.get("/reviews", async (req, res) => {
     //   const query = {};
@@ -120,30 +138,6 @@ async function run() {
 
     //     res.send({ count, services });
     //   });
-
-    //Update Status
-    // app.patch("/orders/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const status = req.body.status;
-    //   console.log(status);
-    //   const filter = { _id: ObjectId(id) };
-    //   const UpdatedDoc = {
-    //     $set: {
-    //       status: status,
-    //     },
-    //   };
-    //   const result = await OrderCollection.updateOne(filter, UpdatedDoc);
-    //   res.send(result);
-    // });
-
-    //Delete User
-    // app.delete("/orders/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) }; //eta thik thak na hoile pura database e jabe ga
-    //   console.log("trying to delete", id);
-    //   const result = await OrderCollection.deleteOne(query);
-    //   res.send(result);
-    // });
   } finally {
   }
 }
