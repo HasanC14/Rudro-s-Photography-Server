@@ -35,6 +35,14 @@ async function run() {
   try {
     const ServiceCollection = client.db("RP_Database").collection("Services");
     const ReviewCollection = client.db("RP_Database").collection("Reviews");
+    //JWT
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+      res.send({ token });
+    });
     //All Services
     app.get("/services", async (req, res) => {
       const query = {};
@@ -108,8 +116,9 @@ async function run() {
     //Update Review
     app.patch("/UpdateReview/:id", async (req, res) => {
       const id = req.params.id;
-      const UpdatedReview = req.body.UpdatedReview;
       const filter = { _id: ObjectId(id) };
+      const UpdatedReview = req.body.UpdatedReview;
+
       const UpdatedDoc = {
         $set: {
           UserReview: UpdatedReview,
@@ -118,39 +127,6 @@ async function run() {
       const result = await ReviewCollection.updateOne(filter, UpdatedDoc);
       res.send(result);
     });
-    //All Reviews
-    // app.get("/reviews", async (req, res) => {
-    //   const query = {};
-    //   const cursor = ReviewCollection.find(query);
-    //   const reviews = await cursor.toArray();
-    //   res.send(reviews);
-    // });
-    //JWT
-    // app.post("/jwt", (req, res) => {
-    //   const user = req.body;
-    //   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    //     expiresIn: "1h",
-    //   });
-    //   res.send({ token });
-    //   //send must json e hote hobe tai second bracket die dilam
-    // });
-
-    //All service with limit
-    // app.get("/services", async (req, res) => {
-    //     const CurrentPage = parseInt(req.query.CurrentPage);
-    //     const PerPageData = parseInt(req.query.PerPageData);
-
-    //     const query = {};
-    //     const cursor = ServiceCollection.find(query);
-    //     const services = await cursor
-    //       .skip(CurrentPage * PerPageData)
-    //       .limit(PerPageData)
-    //       .toArray();
-
-    //     const count = await ServiceCollection.estimatedDocumentCount();
-
-    //     res.send({ count, services });
-    //   });
   } finally {
   }
 }
